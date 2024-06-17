@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  db:
+    image: ankane/pgvector:v0.5.1
+    volumes:
+      - ./.docker/postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: $PG_DB
+      POSTGRES_USER: $PG_USER
+      POSTGRES_PASSWORD: $PG_PASS
+    ports:
+      - "5432:5432"
+  s3:
+    image: minio/minio
+    volumes:
+      - ./.docker/minio_data:/data
+    environment:
+      MINIO_ROOT_USER: $S3_ROOT_USER
+      MINIO_ROOT_PASSWORD: $S3_ROOT_PASS
+    ports:
+      - "9000:9000"
+    command: server /data
+
+volumes:
+  postgres_data:
+  minio_data:
