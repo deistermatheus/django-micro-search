@@ -1,7 +1,8 @@
 from ninja import NinjaAPI
+from typing import Dict
 
 api = NinjaAPI()
 
-@api.get("/hello")
-def hello(request):
-    return "Hello world"
+@api.get("/health")
+def health(request)-> Dict[str, bool]:
+    return {"ok": True}

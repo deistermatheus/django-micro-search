@@ -16,6 +16,10 @@ format:
 format:
 	@$(POETRY_RUN) mypy app
 
+.PHONY: containers
+format:
+	@docker-compose up -d
+
 .PHONY: check
 check: lint format typing
-	@echo "Linting and formatting check completed."
+	@echo "Linting, formatting and static type check completed."
