@@ -1,5 +1,4 @@
 from typing import Optional
-from functools import lru_cache 
 
 from pydantic import Field
 from openai import OpenAI
@@ -24,21 +23,21 @@ class GetDocumentDTO(ModelSchema):
     class Meta:
         model = Document
         exclude = ['id', 'text_embedding']
-       
 
-class DocumentCommandsService():
+
+class DocumentCommandService():
     @staticmethod
     def create_document(payload: CreateDocumentDTO) -> Document:
         document = Document.objects.create(**payload.dict())
-        
+
         embeddings = DocumentEmbeddingsService.get_textual_embedding(document)
-        
+
         document.text_embedding = embeddings
         document.save()
 
         return document
 
-class DocumentEmbeddingsService():    
+class DocumentEmbeddingsService():
     @staticmethod
     def get_textual_embedding(document: Document):
         text = f"{document.title} - {document.description}"
@@ -49,7 +48,7 @@ class DocumentEmbeddingsService():
     def get_query_embedding(query):
         response = ai.embeddings.create(input=query, model=EMBEDDING_MODEL, dimensions=DIMENSIONS)
         return response.data[0].embedding
-    
+
 class DocumentQueryService():
     @staticmethod
     def semantic_search(query):
