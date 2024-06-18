@@ -2,7 +2,10 @@ from ninja import NinjaAPI
 from ninja.errors import HttpError
 from typing import Dict, List
 
-from documents.services import CreateDocumentDTO, GetDocumentDTO,  DocumentCommandService, DocumentQueryService, SearchChoices
+from documents.services import (
+    CreateDocumentDTO, GetDocumentDTO,
+    DocumentCommandService, DocumentQueryService,
+    SearchChoices )
 
 api = NinjaAPI()
 

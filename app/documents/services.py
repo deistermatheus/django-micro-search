@@ -66,7 +66,7 @@ class DocumentQueryService():
         ).order_by("distance")[:3]
 
         return documents_with_distance
-    
+
     @staticmethod
     def text_search(query):
         vector = SearchVector("title", "description")
@@ -74,9 +74,9 @@ class DocumentQueryService():
         documents_with_rank = Document.objects.all().annotate(
             rank=SearchRank(vector, parsed_query)
         ).order_by("-rank")[:3]
-        
+
         return documents_with_rank
-    
+
     @staticmethod
     def hybrid_search(query):
         text_result = list(DocumentQueryService.text_search(query))
@@ -91,9 +91,9 @@ class DocumentQueryService():
     def reciprocal_rank_fusion(list1: List[Document], list2: List[Document], k: int = 60) -> List[Document]:
         def score(rank: int) -> float:
             return 1.0 / (rank + k)
-    
+
         scores = defaultdict(float)
-      
+
         for rank, doc in enumerate(list1):
             scores[doc.uuid] += score(rank)
 
