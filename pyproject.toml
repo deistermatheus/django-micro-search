@@ -14,10 +14,17 @@ psycopg2-binary = "^2.9.9"
 python-dotenv = "^1.0.1"
 django-ninja = "^1.1.0"
 
+[tool.mypy]
+plugins = ["mypy_django_plugin.main"]
+
+[tool.django-stubs]
+django_settings_module = "app.app.settings"
+
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.4.9"
-black = "^24.4.2"
+mypy = "^1.10.0"
+django-stubs = {extras = ["compatible-mypy"], version = "^5.0.2"}
 
 [build-system]
 requires = ["poetry-core"]
