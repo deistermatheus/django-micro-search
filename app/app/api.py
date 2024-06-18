@@ -19,7 +19,8 @@ def create_document(request, payload: CreateDocumentDTO):
 def query_documents(request, q: str, mode: SearchChoices = 'semantic'):
     mapper = {
         'semantic':  DocumentQueryService.semantic_search,
-        'textual': DocumentQueryService.text_search
+        'textual': DocumentQueryService.text_search,
+        'hybrid': DocumentQueryService.hybrid_search
     }
 
     query_handler = mapper.get(mode, None)

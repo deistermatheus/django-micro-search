@@ -1,4 +1,5 @@
-from typing import Optional
+from typing import Optional, List
+from collections import defaultdict
 from enum import Enum
 
 from pydantic import Field
@@ -31,6 +32,7 @@ class GetDocumentDTO(ModelSchema):
 class SearchChoices(str, Enum):
     semantic = 'semantic'
     textual = 'textual'
+    hybrid = 'hybrid'
 
 class DocumentCommandService():
     @staticmethod
@@ -74,3 +76,35 @@ class DocumentQueryService():
         ).order_by("-rank")[:3]
         
         return documents_with_rank
+    
+    @staticmethod
+    def hybrid_search(query):
+        text_result = list(DocumentQueryService.text_search(query))
+        semantic_result = list(DocumentQueryService.semantic_search(query))
+
+        combined_result = DocumentQueryService.reciprocal_rank_fusion(text_result, semantic_result)[:3]
+
+        return combined_result
+
+
+    @staticmethod
+    def reciprocal_rank_fusion(list1: List[Document], list2: List[Document], k: int = 60) -> List[Document]:
+        def score(rank: int) -> float:
+            return 1.0 / (rank + k)
+    
+        scores = defaultdict(float)
+      
+        for rank, doc in enumerate(list1):
+            scores[doc.uuid] += score(rank)
+
+        for rank, doc in enumerate(list2):
+            scores[doc.uuid] += score(rank)
+
+        combined_scores = [(doc, scores[doc.uuid]) for doc in set(list1 + list2)]
+
+        combined_scores.sort(key=lambda x: x[1], reverse=True)
+
+
+        combined_ranked_list = [doc for doc, _ in combined_scores]
+
+        return combined_ranked_list
