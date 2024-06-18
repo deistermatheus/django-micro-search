@@ -57,6 +57,7 @@ class DocumentEmbeddingsService():
     def get_query_embedding(query):
         response = ai.embeddings.create(input=query, model=EMBEDDING_MODEL, dimensions=DIMENSIONS)
         return response.data[0].embedding
+
 class DocumentQueryService():
     @staticmethod
     def semantic_search(query):
