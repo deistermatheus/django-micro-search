@@ -1,0 +1,13 @@
+exclude = [
+    "__pycache__",
+    ".venv",
+    "migrations",
+    ".mypy_cache",
+    ".ruff_cache",
+    ".git",
+]
+
+line-length = 120
+
+
+lint.select = ["E", "F", "W", "C90"]

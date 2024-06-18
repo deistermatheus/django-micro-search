@@ -104,3 +104,6 @@ dmypy.json
 
 # docker volumes
 .docker/
+
+# local seeding data
+.seed/
