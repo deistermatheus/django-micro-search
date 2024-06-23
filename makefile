@@ -6,18 +6,18 @@ POETRY_RUN = poetry run
 # Define targets
 .PHONY: lint
 lint:
-	@$(POETRY_RUN) ruff check app --fix
+	@$(POETRY_RUN) ruff check . --fix
 
 .PHONY: format
 format:
-	@$(POETRY_RUN) ruff format app --fix
+	@$(POETRY_RUN) ruff format .
 
 .PHONY: typing
-format:
-	@$(POETRY_RUN) mypy app
+typing:
+	@$(POETRY_RUN) mypy --explicit-package-bases ./app
 
 .PHONY: containers
-format:
+containers:
 	@docker-compose up -d
 
 .PHONY: check

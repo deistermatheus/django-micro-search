@@ -11,30 +11,34 @@ from pgvector.django import CosineDistance
 
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 
-EMBEDDING_MODEL = 'text-embedding-3-small'
+EMBEDDING_MODEL = "text-embedding-3-small"
 DIMENSIONS = 512
 
-ai =  OpenAI()
+ai = OpenAI()
 
 
 class CreateDocumentDTO(ModelSchema):
     class Meta:
         model = Document
-        fields = ['title', 'description']
+        fields = ["title", "description"]
+
 
 class GetDocumentDTO(ModelSchema):
     distance: Optional[float] = Field(None)
     rank: Optional[float] = Field(None)
+
     class Meta:
         model = Document
-        exclude = ['id', 'text_embedding']
+        exclude = ["id", "text_embedding"]
+
 
 class SearchChoices(str, Enum):
-    semantic = 'semantic'
-    textual = 'textual'
-    hybrid = 'hybrid'
+    semantic = "semantic"
+    textual = "textual"
+    hybrid = "hybrid"
 
-class DocumentCommandService():
+
+class DocumentCommandService:
     @staticmethod
     def create_document(payload: CreateDocumentDTO) -> Document:
         document = Document.objects.create(**payload.dict())
@@ -46,7 +50,8 @@ class DocumentCommandService():
 
         return document
 
-class DocumentEmbeddingsService():
+
+class DocumentEmbeddingsService:
     @staticmethod
     def get_textual_embedding(document: Document):
         text = f"{document.title} - {document.description}"
@@ -58,13 +63,16 @@ class DocumentEmbeddingsService():
         response = ai.embeddings.create(input=query, model=EMBEDDING_MODEL, dimensions=DIMENSIONS)
         return response.data[0].embedding
 
-class DocumentQueryService():
+
+class DocumentQueryService:
     @staticmethod
     def semantic_search(query):
         embedded_query = DocumentEmbeddingsService.get_query_embedding(query)
-        documents_with_distance = Document.objects.all().annotate(
-            distance=CosineDistance("text_embedding", embedded_query)
-        ).order_by("distance")[:3]
+        documents_with_distance = (
+            Document.objects.all()
+            .annotate(distance=CosineDistance("text_embedding", embedded_query))
+            .order_by("distance")[:3]
+        )
 
         return documents_with_distance
 
@@ -72,9 +80,9 @@ class DocumentQueryService():
     def text_search(query):
         vector = SearchVector("title", "description")
         parsed_query = SearchQuery(query)
-        documents_with_rank = Document.objects.all().annotate(
-            rank=SearchRank(vector, parsed_query)
-        ).order_by("-rank")[:3]
+        documents_with_rank = (
+            Document.objects.all().annotate(rank=SearchRank(vector, parsed_query)).order_by("-rank")[:3]
+        )
 
         return documents_with_rank
 
@@ -86,7 +94,6 @@ class DocumentQueryService():
         combined_result = DocumentQueryService.reciprocal_rank_fusion(text_result, semantic_result)[:3]
 
         return combined_result
-
 
     @staticmethod
     def reciprocal_rank_fusion(list1: List[Document], list2: List[Document], k: int = 60) -> List[Document]:
@@ -104,7 +111,6 @@ class DocumentQueryService():
         combined_scores = [(doc, scores[doc.uuid]) for doc in set(list1 + list2)]
 
         combined_scores.sort(key=lambda x: x[1], reverse=True)
-
 
         combined_ranked_list = [doc for doc, _ in combined_scores]
 
