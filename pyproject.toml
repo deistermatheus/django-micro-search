@@ -23,9 +23,10 @@ django-storages = "^1.14.3"
 
 [tool.mypy]
 plugins = ["mypy_django_plugin.main"]
+mypy_path = "./app"
 
 [tool.django-stubs]
-django_settings_module = "app.app.settings"
+django_settings_module = "app.settings"
 
 
 [tool.poetry.group.dev.dependencies]
