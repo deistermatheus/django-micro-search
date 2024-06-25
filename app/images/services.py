@@ -49,22 +49,25 @@ class GetImageDocumentDTO(ModelSchema):
         model = ImageDocument
         exclude = ["id", "image_embedding"]
 
+class CreateImageResultDTO(CreateImageDocumentDetailsDTO):
+    image: str
+
 
 class SearchImageDocumentsResultDTO(Schema):
     similar: List[GetImageDocumentDTO]
-    reasoning: str
+    reasoning: Optional[str] = Field(None)
 
 
 class ImageDocumentCommandService:
     @staticmethod
-    def create_image_document(details: CreateImageDocumentDetailsDTO, image: UploadedFile) -> GetImageDocumentDTO:
+    def create_image_document(details: CreateImageDocumentDetailsDTO, image: UploadedFile)-> CreateImageResultDTO:
         image_name = default_storage.save(image.name, image)
 
-        details = details.dict()
+        details_dict = details.dict()
         image_embedding = CLIPModel.embed_image(image.file)
-        document = ImageDocument.objects.create(**details, image_embedding=image_embedding, image=image_name)
+        document = ImageDocument.objects.create(**details_dict, image_embedding=image_embedding, image=image_name)
 
-        return {**details, "image": document.image.url}
+        return {**details_dict, "image": document.image.url}
 
 
 class ImageDocumentQueryService:

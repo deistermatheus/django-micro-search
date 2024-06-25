@@ -5,7 +5,7 @@ import DocumentSearch from '../components/DocumentSearch';
 const Documents: React.FC = () => {
   const [mode, setMode] = React.useState<String>('Search')
   
-  const mapModeToComponent = (mode) => {
+  const mapModeToComponent = (mode: String) => {
     if(mode === 'Search'){
       return <DocumentSearch/>
     } else if(mode === 'Create'){
