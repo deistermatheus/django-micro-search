@@ -1,0 +1,85 @@
+body {
+  font-family: sans-serif;
+}
+
+/* Additional styling for navigation */
+nav ul {
+  display: flex;
+  list-style-type: none;
+  padding: 0;
+}
+
+nav ul li a {
+  margin-right: 10px;
+  padding: 5px;
+}
+
+#root {
+  max-width: 95%;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  #root {
+    max-width: 80%;
+  }
+}
+
+
+/* Ensure the body uses PicoCSS styles */
+body {
+  font-family: sans-serif;
+}
+
+/* Search container styling */
+.search-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  max-width: 98%;
+  margin: 0 auto;
+}
+
+.search-container h4 {
+  flex-basis: 100%;
+}
+
+@media (max-width: 768px) {
+  .search-container {
+    flex-direction: column;
+  }
+}
+
+/* Form and results styling */
+.search-form {
+  flex: 1;
+  min-width: 300px;
+}
+
+.search-results {
+  flex: 2;
+  min-width: 300px;
+}
+
+/* Additional form styling */
+.search-form form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.search-form label {
+  font-weight: bold;
+}
+
+.search-form input,
+.search-form select,
+.search-form button {
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+
+.search-form button {
+  align-self: flex-start;
+}
+
