@@ -1,10 +1,20 @@
 import React, { useState } from 'react';
 import client from '../api/client'
 
+
+type SearchResult = {
+    uuid: string
+    description: string
+    title: string
+    rank: string | null
+    distance: string | null
+    image: string
+}
+
 const DocumentSearch: React.FC = () => {
     const [query, setQuery] = useState('');
     const [mode, setMode] = useState('semantic');
-    const [response, setResponse] = useState<Object | null>(null);
+    const [response, setResponse] = useState<SearchResult[] | null>(null);
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
@@ -20,11 +30,11 @@ const DocumentSearch: React.FC = () => {
             setResponse(res.data);
         } catch (error) {
             console.error('Error submitting the form:', error);
-            setResponse('Error submitting the form');
+            setResponse(null);
         }
     };
 
-    const searchResults = (results) => {
+    const searchResults = (results: SearchResult[]) => {
         return (
             <table>
                 <thead>

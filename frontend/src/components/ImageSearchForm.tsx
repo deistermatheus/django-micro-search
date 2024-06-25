@@ -1,10 +1,23 @@
 import React, { useState } from 'react';
 import client from '../api/client'
 
+type SearchResult = {
+    uuid: string
+    description: string
+    title: string
+    distance: string
+    image: string
+}
+
+type SearchResponse = {
+    similar: SearchResult[]
+    reasoning: string
+}
+
 const ImageSearchForm: React.FC = () => {
     const [prompt, setPrompt] = useState<string>('');
     const [file, setFile] = useState<Blob | string>('')
-    const [response, setResponse] = useState<Object | null>(null);
+    const [response, setResponse] = useState<SearchResponse | null>(null);
 
     const handleFileChange = (e: React.FormEvent<HTMLInputElement>) => {
         const { files } = e.target as unknown as { files: FileList }
@@ -35,13 +48,13 @@ const ImageSearchForm: React.FC = () => {
             setResponse(res.data);
         } catch (error) {
             console.error('Error submitting the form:', error);
-            setResponse('Error submitting the form');
+            setResponse(null);
         }
 
         setPrompt('')
     };
 
-    const searchResults = (results) => {
+    const searchResults = (results: SearchResult[]) => {
         return (
             <table>
                 <thead>
@@ -49,6 +62,7 @@ const ImageSearchForm: React.FC = () => {
                         <th>Title</th>
                         <th>Description</th>
                         <th>Score/Rank</th>
+                        <th>Image Preview</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -56,7 +70,7 @@ const ImageSearchForm: React.FC = () => {
                         <tr key={result.uuid}>
                             <td>{result.title}</td>
                             <td>{result.description}</td>
-                            <td>{result.distance ? result.distance : result.rank}</td>
+                            <td>{result.distance ?? result.distance}</td>
                             <td><img width="50" height="50" src={result.image} onClick={() => window.open(result.image)}></img></td>
                         </tr>
                     ))}
@@ -69,7 +83,7 @@ const ImageSearchForm: React.FC = () => {
         <div className="container">
             <h4>Search Images</h4>
             <form onSubmit={handleSubmit}>
-             
+
                 <label htmlFor="user prompt">Optional GPT Prompt To Analyze results</label>
                 <textarea
                     id="user prompt"
@@ -84,7 +98,7 @@ const ImageSearchForm: React.FC = () => {
                 <button type="submit">Search Similar Images</button>
             </form>
             {response && <p>{response?.reasoning}</p>}
-            {response &&  searchResults(response.similar)}
+            {response && searchResults(response.similar)}
         </div>
     );
 };

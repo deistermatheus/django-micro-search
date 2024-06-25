@@ -68,7 +68,7 @@ const ImageForm: React.FC = () => {
 
                 <button type="submit">Create Document</button>
             </form>
-            {response && <p>{response}</p>}
+            {/* {response && <p>{response}</p>} */}
         </div>
     );
 };

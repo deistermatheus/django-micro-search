@@ -104,6 +104,10 @@ class ImageDocumentQueryService:
         uploaded_image_base64 = ImageDocumentQueryService.convert_local_image_to_base64(image.file)
 
         messages = [
+            {"role": "system", "content": '''You will be given four images, 
+             one uploaded as a query and the other three retreived through a similarity algorithm. 
+             Answer the user query based on this information'''
+             },
             {"role": "system", "content": user_prompt},
             {
                 "role": "user",
